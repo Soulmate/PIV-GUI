@@ -1,0 +1,31 @@
+classdef Image_preprocessor_params
+    %UNTITLED Summary of this class goes here
+    %   Detailed explanation goes here
+    
+    properties
+        version = 1;
+        %%
+        color_channel = 1;
+        %% bg
+        bg
+        
+        bg_on = false;
+        bg_cut_type = 'max';% min или max или другое (тогда не будет отрезатьс€)
+        bg_cut_val  = 0;
+        
+        bg_source_file_path = "";
+        
+        bg_source_auto_prctile = 1;
+        bg_source_auto_N = 10; %число сэмплов
+        %% mask
+        mask
+        
+        mask_on = false;
+        mask_set_value = 0; % пиксели замен€ютс€ на это значение        
+        mask_source_path = "";
+        mask_source_color = [255 0 0]; % пиксели загружаемой картинки с таким цветом считаютс€ маской
+        %% levels
+        levels_on = false;
+        levels_limits = [0 100];
+    end
+end
