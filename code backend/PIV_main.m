@@ -182,8 +182,9 @@ classdef PIV_main < handle
             obj.core.transform_processor = Transform_processor( obj.p.rp, obj.p.pg, obj.p.pf );
             obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, obj.core.fi_processor.data  );
         end
-        function Set_pf( obj, p_pf )
+        function Set_pf( obj, p_pf )            
             obj.p.pf = p_pf;
+            obj.Go_to_ti(1);
             obj.core.piv_processor = PIV_processor( obj.p.pp, obj.p.pf, obj.p.pg,...
                 [ obj.proj_path ' - temp storage\piv\' ], obj.data_seg_size );
             obj.core.fi_processor = Filter_and_interpolation_processor( obj.p.fi, obj.p.pf, obj.p.pg,...

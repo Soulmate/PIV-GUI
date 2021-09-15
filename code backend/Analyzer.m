@@ -26,7 +26,7 @@ classdef Analyzer < handle
             obj.fi_processor__data = fi_processor__data;
         end
         function [ts, pos_ij_arr] = Get_time_series(obj, data, pos_ij_arr)
-            %METHOD1 Summary of this method goes here
+            %Get_time_series Summary of this method goes here
             %   Detailed explanation goes here
             %   pos_ij_arr - индексы на сетке в 2 колонки, если пустое - то
             %   для всех точек

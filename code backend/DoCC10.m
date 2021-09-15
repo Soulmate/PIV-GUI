@@ -136,12 +136,16 @@ for xi = 1:xFieldCount
                 yID = yID + CC_ydispl;
             end
             if (saveCCandIMC)
+                im1c_FirstPass = im1c;
+                im2c_FirstPass = im2c;
                 xd_FirstPass = CC_xdispl;
                 yd_FirstPass = CC_ydispl;
                 result_conv_firstPass = result_conv;
             end
         else
             if (saveCCandIMC)
+                im1c_FirstPass = nan;
+                im2c_FirstPass = nan;
                 xd_FirstPass = nan;
                 yd_FirstPass = nan;
                 result_conv_firstPass = nan;
@@ -254,13 +258,18 @@ for xi = 1:xFieldCount
             CC_info.imc1 = im1c;
             CC_info.imc2 = im2c;
             CC_info.result_conv = result_conv;
-            CC_info.result_conv_firstPass = result_conv_firstPass;
+            
 %             CC_info.r = r;
 %             CC_info.s = s;
             CC_info.CC_xdispl = CC_xdispl;
             CC_info.CC_ydispl = CC_ydispl;
+                        
+            CC_info.im1c_FirstPass = im1c_FirstPass;
+            CC_info.im2c_FirstPass = im2c_FirstPass;
+            CC_info.result_conv_firstPass = result_conv_firstPass;
             CC_info.xd_FirstPass = xd_FirstPass;
             CC_info.yd_FirstPass = yd_FirstPass;
+            
             CC_info.xp_sp = xp_sp;
             CC_info.yp_sp = yp_sp;
             CC_info.xdispl = xdispl(xi,yi);
