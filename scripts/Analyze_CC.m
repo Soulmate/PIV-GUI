@@ -6,7 +6,6 @@ d = obj.core.piv_processor.data.Get(obj.current_ti);
 pos_ij_arr = Get_pos_ij_arr__of_selected_point(obj);
 
 
-close all
 
 for pos_num = 1:size(pos_ij_arr,1)
     

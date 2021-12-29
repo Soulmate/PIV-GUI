@@ -81,7 +81,7 @@ classdef PIV_main < handle
             
             exporter = Exporter();
             
-            analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, fi_processor.data  );
+            analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, piv_processor.data, fi_processor.data  );
             
             obj.core = Core( il, ipp, piv_processor, fi_processor, transform_processor, exporter, analyzer );
             obj.Go_to_frame(1);
@@ -105,14 +105,23 @@ classdef PIV_main < handle
             obj.Add_to_log(sprintf('Сохранение проекта завершено'));
         end
         
-        function Proj_load(obj, proj_path)
+        function Proj_load(obj, proj_path, new_images_path)
             obj.Add_to_log(sprintf('Загрузка проекта...'));
             obj.proj_path = proj_path;
             
             f = load(proj_path,'-mat');
             obj.p = f.p;
             
+            if exist('new_images_path','var')
+                obj.p.il.images_folder = new_images_path;
+            end
+            
             il = Image_loader( obj.p.il.images_folder, obj.p.il.images_ext, 10 );
+            if (il.emptyFolder) % на случай пустой папки
+                il.imNum = obj.p.pf.frame_count;
+                il.imSize = [max(obj.p.pg.xArr) max(obj.p.pg.yArr)];
+            end
+            
             ipp = Image_preprocessor( il, obj.p.ipp, 10 );
             
             piv_processor = PIV_processor( obj.p.pp, obj.p.pf, obj.p.pg,...
@@ -125,7 +134,7 @@ classdef PIV_main < handle
             
             exporter = Exporter();
             
-            analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, fi_processor.data  );
+            analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, piv_processor.data, fi_processor.data  );
             
             obj.core = Core( il, ipp, piv_processor, fi_processor, transform_processor, exporter, analyzer );
             
@@ -163,7 +172,7 @@ classdef PIV_main < handle
         function Set_rp_params( obj, rp )
             obj.p.rp = rp;
             obj.core.transform_processor = Transform_processor( obj.p.rp, obj.p.pg, obj.p.pf );
-            obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, obj.core.fi_processor.data  );
+            obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg,obj.core.piv_processor.data,   obj.core.fi_processor.data  );
         end
         function Set_pp( obj, pp )
             obj.p.pp = pp;
@@ -171,7 +180,7 @@ classdef PIV_main < handle
                 [ obj.proj_path ' - temp storage\piv\' ], obj.data_seg_size );
             obj.core.fi_processor = Filter_and_interpolation_processor( obj.p.fi, obj.p.pf, obj.p.pg,...
                 [ obj.proj_path ' - temp storage\fi\' ],  obj.data_seg_size);
-            obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, obj.core.fi_processor.data  );
+            obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, obj.core.piv_processor.data,  obj.core.fi_processor.data  );
         end
         function Set_pg( obj, p_pg )
             obj.p.pg = p_pg;
@@ -180,7 +189,7 @@ classdef PIV_main < handle
             obj.core.fi_processor = Filter_and_interpolation_processor( obj.p.fi, obj.p.pf, obj.p.pg,...
                 [ obj.proj_path ' - temp storage\fi\' ],  obj.data_seg_size);
             obj.core.transform_processor = Transform_processor( obj.p.rp, obj.p.pg, obj.p.pf );
-            obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, obj.core.fi_processor.data  );
+            obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, obj.core.piv_processor.data,   obj.core.fi_processor.data  );
         end
         function Set_pf( obj, p_pf )            
             obj.p.pf = p_pf;
@@ -190,17 +199,17 @@ classdef PIV_main < handle
             obj.core.fi_processor = Filter_and_interpolation_processor( obj.p.fi, obj.p.pf, obj.p.pg,...
                 [ obj.proj_path ' - temp storage\fi\' ],  obj.data_seg_size);
             obj.core.transform_processor = Transform_processor( obj.p.rp, obj.p.pg, obj.p.pf );
-            obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, obj.core.fi_processor.data  );
+            obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, obj.core.piv_processor.data,  obj.core.fi_processor.data  );
         end
         function Set_fi_params( obj, fi_params )
             obj.p.fi = fi_params;
             obj.core.fi_processor = Filter_and_interpolation_processor( obj.p.fi, obj.p.pf, obj.p.pg,...
                 [ obj.proj_path ' - temp storage\fi\' ],  obj.data_seg_size);
-            obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, obj.core.fi_processor.data  );
+            obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, obj.core.piv_processor.data,  obj.core.fi_processor.data  );
         end
         function Set_ap( obj, ap )
             obj.p.ap = ap;
-            obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, obj.core.fi_processor.data  );
+            obj.core.analyzer = Analyzer( obj.p.ap, obj.p.rp, obj.p.pp, obj.p.pf, obj.p.pg, obj.core.piv_processor.data,  obj.core.fi_processor.data  );
         end
         function Set_plot_params( obj, plot_params )
             obj.p.plot_params = plot_params;

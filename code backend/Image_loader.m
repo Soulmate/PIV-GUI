@@ -12,14 +12,24 @@ classdef Image_loader < handle
         imNum;
         % свойста, которые стоит менять после конструктора:        
         use_ind2gray; %индексное изображение, для файлов которые пишет TimeBench
+        emptyFolder %если пустая папка, выводить заглушку
     end
     
     methods
         function il = Image_loader( impath, imagesExt, bufferSize )
             if nargin > 0
                 %                 disp('Reading Folder....')
-                if ~exist(impath,'dir'), error('=== no folder === '); end
-                tic
+                if ~exist(impath,'dir')                    
+                    warning('=== no folder === '); 
+                    il.emptyFolder = true;
+                    il.indexArray = [];
+                    il.imArray = [];
+                    il.imNum = 1;
+                    im = zeros(100); %ЗАГЛУШКА
+                    il.imSize = fliplr(size(im(:,:,1)));
+                    il.imagePaths = {'EMPTY'};
+                end
+%                 tic
                 il.path = impath;
                 if  ~exist('imagesExt','var') || isempty(imagesExt)
                     d = dir ([impath '\*']);
@@ -32,13 +42,26 @@ classdef Image_loader < handle
                 %% чтение папки с изображениями
                 %                 imagesExt = 'jpg';
                 il.imagePaths = FilesInFolder( il.path , imagesExt, true);
-                if isempty(il.imagePaths), error('Пустая папка'); end
+                if isempty(il.imagePaths)
+                    warning('=== empty folder === '); 
+                    il.emptyFolder = true;
+                    il.indexArray = [];
+                    il.imArray = [];
+                    il.imNum = 1;
+                    im = zeros(100); %ЗАГЛУШКА
+                    il.imSize = fliplr(size(im(:,:,1)));
+                    il.imagePaths = {'EMPTY'};
+                else
+                    il.emptyFolder = false;
+                    il.indexArray = zeros(il.bufferSize,1);
+                    il.imArray = cell(il.bufferSize,1);
+                    il.imNum = numel(il.imagePaths);
+                    im = imread(il.imagePaths{1});
+                    il.imSize = fliplr(size(im(:,:,1)));
+                end
                 
-                il.indexArray = zeros(il.bufferSize,1);
-                il.imArray = cell(il.bufferSize,1);
-                il.imNum = numel(il.imagePaths);
-                im = imread(il.imagePaths{1});
-                il.imSize = fliplr(size(im(:,:,1)));
+                
+                
                 %                 fprintf('File info loaded in %g sec\nTotal number of frames %d\n',toc, il.imNum);
             else
                 error('!!!! need path in constructor');
@@ -46,6 +69,12 @@ classdef Image_loader < handle
         end
         
         function im = getImage(obj, i)
+            if obj.emptyFolder                    
+                    im = zeros(100); %ЗАГЛУШКА
+                    return
+            end
+            
+            
             if (obj.bufferSize > 0)
                 ii = find(obj.indexArray == i);
                 if ~isempty(ii)
