@@ -13,7 +13,7 @@ classdef Image_preprocessor_params
         bg_cut_type = 'max';% min или max или другое (тогда не будет отрезатьс€)
         bg_cut_val  = 0;
         
-        bg_source_file_path = '';
+        bg_source_file_path = "";
         
         bg_source_auto_prctile = 1;
         bg_source_auto_N = 10; %число сэмплов
@@ -26,9 +26,8 @@ classdef Image_preprocessor_params
         mask_source_color = [255 0 0]; % пиксели загружаемой картинки с таким цветом считаютс€ маской
         %% динамическа€ маска
         dynamic_mask_on = false;
-        dynamic_mask_imageLoader; % коллекци€ изображений с масками размером с исходную         
-        dynamic_mask_set_value = 0; % пиксели замен€ютс€ на это значение     
-        dynamic_mask_source_color = 0; % пиксели загружаемой картинки с таким цветом считаютс€ маской
+        dynamic_mask_folder = ""; % папка с картинками масками
+        dynamic_mask_ext = ; % папка с картинками масками
         %% levels
         levels_on = false;
         levels_limits = [0 100];

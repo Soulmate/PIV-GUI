@@ -56,8 +56,8 @@ classdef Image_preprocessor < handle
             end
             
             if obj.params.dynamic_mask_on && ~isempty(obj.params.dynamic_mask_imageLoader)             
-                mask = obj.params.dynamic_mask_imageLoader.getImage(i) == obj.params.dynamic_mask_source_color;
-                im( mask ) = obj.params.dynamic_mask_set_value;
+                mask = obj.params.dynamic_mask_imageLoader.getImage(i) == obj.params.dynamic_mask_imageLoader
+                im( obj.params.mask ) = obj.params.mask_set_value;
             end
             
             if obj.params.levels_on
